@@ -35,3 +35,10 @@ override.tf.json
 # Ignore CLI configuration files
 .terraformrc
 terraform.rc
+
+# From PDF 
+.terraform
+*.tfstate
+*.tfstate.backup
+
+.secrets* 
