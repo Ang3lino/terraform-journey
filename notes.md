@@ -47,6 +47,13 @@ LV_BRANCH='release-1.4/neovim-0.9' bash <(curl -s https://raw.githubusercontent.
 
 ```
 
+# VSCode Fira code
+
+Download from the first link, unzip and click the top .ttf. Next set VSCode settings to "Fira Code".
+
+https://fonts.google.com/specimen/Fira+Code
+https://firacode.org/install-and-use-firacode-font-vscode-on-ubuntu/
+
 
 # Providers
 
@@ -56,18 +63,16 @@ provider "aws" {
 }
 ```
 
-
 # Git creation from CLI
 
+Create a new repo on Github, clone it, add all the files on this new repo and do the below cmds. Prior to this I set my SSH key on Github.
+
 ```sh
-git init
-git add main.tf .terraform.lock.hcl .gitignore
+git add .
 git commit -m "Initial commit"
-
-git remote add origin https://github.com/ang3lino/terraform-journey.git
-
-git remote add origin git@github.com:
-ang3lino/terraform-journey
-
-git push origin main
+git remote set-url origin git@github.com:Ang3lino/terraform-journey.git
+git push
 ```
+
+# Single server
+
