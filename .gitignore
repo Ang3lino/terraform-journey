@@ -41,4 +41,6 @@ terraform.rc
 *.tfstate
 *.tfstate.backup
 
+# Personales
 .secrets* 
+*pem

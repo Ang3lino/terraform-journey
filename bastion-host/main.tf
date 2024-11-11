@@ -2,6 +2,14 @@ provider "aws" {
   region = "us-east-1"
 }
 
+module "redshift_cluster" {
+  source     = "./redshift"
+  bastion_sg = aws_security_group.instance
+  vpc_id     = data.aws_vpc.default.id
+  username   = "awsuser"
+  password   = var.redshift_password
+}
+
 # Security Group allowing SSH access
 resource "aws_security_group" "instance" {
   name = "bh-sg"
@@ -9,6 +17,12 @@ resource "aws_security_group" "instance" {
     from_port   = var.ssh_port
     to_port     = var.ssh_port
     protocol    = "tcp"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+  egress { # this helps ec2 to update with user data instructions
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1" # -1 allows all protocols
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
@@ -19,6 +33,12 @@ resource "aws_launch_template" "as_template" {
   image_id               = var.ami_free
   instance_type          = var.ec2_type
   vpc_security_group_ids = [aws_security_group.instance.id]
+  user_data = base64encode(<<-EOF
+      #!/bin/bash
+      sudo dnf update
+      sudo dnf install postgresql15
+      EOF
+  )
   lifecycle {
     create_before_destroy = true
   }

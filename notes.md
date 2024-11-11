@@ -74,5 +74,21 @@ git remote set-url origin git@github.com:Ang3lino/terraform-journey.git
 git push
 ```
 
-# Single server
 
+# TF bastion host
+
+Installation on Amazon Linux.
+
+```bash
+#!bin/bash
+sudo dnf update
+sudo dnf install postgresql15
+RS_ENDPOINT="tf-redshift-cluster.c4nrrhyo8awu.us-east-1.redshift.amazonaws.com"
+psql -h $RS_ENDPOINT -U awsuser -d dev -p 5439
+```
+
+```sql
+\pset pager off
+\pset format unaligned
+-- \pset fieldsep @
+```

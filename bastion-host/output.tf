@@ -44,4 +44,25 @@ output "key_pair_name" {
 output "ssh_login_command" {
   value       = "ssh -i ${local_file.private_key_pem.filename} ec2-user@${aws_instance.ec2_instance.public_ip}"
   description = "SSH login command to access the EC2 instance"
-}   
+}
+
+# Redshift module outputs
+output "redshift_endpoint" {
+  value       = module.redshift_cluster.redshift_cluster_endpoint
+  description = "The endpoint address of the Redshift cluster from the module."
+}
+
+output "redshift_port" {
+  value       = module.redshift_cluster.redshift_cluster_port
+  description = "The port of the Redshift cluster from the module."
+}
+
+output "redshift_cluster_id" {
+  value       = module.redshift_cluster.redshift_cluster_id
+  description = "The cluster ID of the Redshift cluster from the module."
+}
+
+output "redshift_endpoint" {
+  value       = module.redshift_cluster.endpoint
+  description = "The cluster ID of the Redshift cluster from the module."
+}
