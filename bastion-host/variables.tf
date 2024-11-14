@@ -8,6 +8,7 @@ variable "ssh_port" {
 }
 
 variable "redshift_password" {
+  sensitive = true
 }
 
 # variable "ami_free" { default = "ami-0fb653ca2d3203ac1" }

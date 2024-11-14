@@ -62,7 +62,7 @@ output "redshift_cluster_id" {
   description = "The cluster ID of the Redshift cluster from the module."
 }
 
-output "redshift_endpoint" {
-  value       = module.redshift_cluster.endpoint
-  description = "The cluster ID of the Redshift cluster from the module."
-}
+# output "redshift_endpoint" {
+#   value       = module.redshift_cluster.endpoint
+#   description = "The cluster ID of the Redshift cluster from the module."
+# }
