@@ -1,13 +1,16 @@
 
 -- SET SESSION AUTHORIZATION awsuser;
 
+-- Creating users, granting permissions
+-- ****************************************************************************
+
 -- Create users and roles referenced in the policy statements.
 CREATE ROLE analyst;
 CREATE ROLE consumer;
 CREATE ROLE dbadmin;
 CREATE ROLE auditor;
 
-SHOW search_path;
+-- SHOW search_path;
 
 -- DROP USER bob;
 -- DROP USER alice;
@@ -21,6 +24,7 @@ CREATE USER joe WITH PASSWORD 'Name_is_joe_1';
 CREATE USER molly WITH PASSWORD 'Name_is_molly_1';
 CREATE USER bruce WITH PASSWORD 'Name_is_bruce_1';
 
+-- sys:secadmin bob, analyst alice, consumer joe, dbadming molly, auditor bruce
 GRANT ROLE sys:secadmin TO bob;
 GRANT ROLE analyst TO alice;
 GRANT ROLE consumer TO joe;
@@ -34,9 +38,12 @@ GRANT ALL ON TABLE tickit_event_redshift TO PUBLIC;
 -- Create table and schema referenced in the policy statements.
 CREATE SCHEMA target_schema;
 GRANT ALL ON SCHEMA target_schema TO PUBLIC;
+
 CREATE TABLE target_schema.target_event_table (LIKE tickit_event_redshift);
 GRANT ALL ON TABLE target_schema.target_event_table TO PUBLIC;
 
+-- Creating RLS policies, testing RLS
+-- ****************************************************************************
 -- Change session to analyst alice.
 SET SESSION AUTHORIZATION alice;
 
@@ -70,6 +77,8 @@ SELECT poldb, polname, polalias, polatts, polqual, polenabled, polmodifiedby
 --  dev   | policy_concerts | rls_table | [{"colname":"catgroup","type":"character varying(10)"}] | "rls_table"."catgroup" = CAST('Concerts' AS TEXT) | t          | bob
 -- (1 row)
 
+-- sys:secadmin bob, analyst alice, consumer joe, dbadming molly, auditor bruce
+-- attached to alice, molly
 ATTACH RLS POLICY policy_concerts ON tickit_category_redshift TO ROLE analyst, ROLE dbadmin;
 
 ALTER TABLE tickit_category_redshift ROW LEVEL SECURITY ON;
@@ -141,10 +150,14 @@ EXPLAIN SELECT catgroup, count(*) FROM tickit_category_redshift GROUP BY catgrou
 -- Change session to security administrator bob.
 SET SESSION AUTHORIZATION bob;
 
+-- sys:secadmin bob, analyst alice, consumer joe, dbadming molly, auditor bruce
+
 -- Grant IGNORE RLS permission so that RLS policies do not get applicable to role dbadmin.
+-- molly modified
 GRANT IGNORE RLS TO ROLE dbadmin;
 
 -- Grant EXPLAIN RLS permission so that anyone in role auditor can view complete EXPLAIN output.
+-- bruce modified
 GRANT EXPLAIN RLS TO ROLE auditor;
 
 -- Change session to dbadmin molly.
@@ -186,6 +199,8 @@ EXPLAIN SELECT catgroup, count(*) FROM tickit_category_redshift GROUP BY catgrou
 -- Change session to security administrator bob.
 SET SESSION AUTHORIZATION bob;
 
+-- sys:secadmin bob, analyst alice, consumer joe, dbadming molly, auditor bruce
+-- alice mod, molly mod
 DETACH RLS POLICY policy_concerts ON tickit_category_redshift FROM ROLE analyst, ROLE dbadmin;
 
 -- Change session to analyst alice.
@@ -202,6 +217,9 @@ GROUP BY catgroup ORDER BY catgroup;
 -- ----------+-------
 -- (0 rows)
 
+
+-- Checking RLS lock integrity
+-- ****************************************************************************
 -- Change session to security administrator bob.
 SET SESSION AUTHORIZATION bob;
 
@@ -210,6 +228,8 @@ WITH (eventid INTEGER) AS ev
 USING (
     ev.eventid IN (SELECT eventid FROM tickit_sales_redshift WHERE qtysold <3)
 );
+
+-- sys:secadmin bob, analyst alice, consumer joe, dbadming molly, auditor bruce
 
 ATTACH RLS POLICY policy_events ON tickit_event_redshift TO ROLE analyst;
 ATTACH RLS POLICY policy_events ON target_schema.target_event_table TO ROLE consumer;
