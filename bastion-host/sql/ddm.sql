@@ -135,6 +135,8 @@ SELECT * FROM credit_cards;
 -- ATTACHING MASK POLICY 
 -- **************************************************************************************************************************************************
 
+RESET SESSION AUTHORIZATION;
+
 --attach mask_credit_card_full to the credit card table as the default policy
 --all users will see this masking policy unless a higher priority masking policy is attached to them or their role
 ATTACH MASKING POLICY mask_credit_card_full

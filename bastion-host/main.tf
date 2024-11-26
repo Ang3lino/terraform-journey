@@ -1,6 +1,3 @@
-provider "aws" {
-  region = "us-east-1"
-}
 
 module "redshift_cluster" {
   source     = "./modules/redshift"
@@ -8,18 +5,18 @@ module "redshift_cluster" {
   vpc_id     = data.aws_vpc.default.id
   username   = "awsuser"
   password   = var.redshift_password
-  iam_roles  = [aws_iam_role.redshift_admin_role.arn]  # Attach IAM Role here
+  iam_roles  = [aws_iam_role.redshift_admin_role.arn] # Attach IAM Role here
 }
 
 module "ec2_instance" {
-  source = "./modules/ec2"
-  subnet_id = data.aws_subnets.default.ids[0]
+  source        = "./modules/ec2"
+  subnet_id     = data.aws_subnets.default.ids[0]
   sec_group_ids = [aws_security_group.instance.id]
 }
 
 resource "aws_s3_bucket" "bucket" {
-  bucket = "tf-angelttv-datalake"
-  force_destroy = true  # This will delete all objects in the bucket before deletion
+  bucket        = "tf-angelttv-datalake"
+  force_destroy = true # This will delete all objects in the bucket before deletion
 }
 
 # Local provisioner to upload files to the bucket
