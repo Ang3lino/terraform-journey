@@ -231,4 +231,3 @@ FROM ROLE analytics_role;
 DROP MASKING POLICY mask_credit_card_full;
 DROP MASKING POLICY mask_credit_card_partial; 
 
-

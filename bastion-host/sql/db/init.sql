@@ -44,6 +44,7 @@ ALTER TABLE category RENAME TO tickit_category_redshift;
 ALTER TABLE sales RENAME TO tickit_sales_redshift;
 ALTER TABLE event RENAME TO tickit_event_redshift;
 
+
 -- CREATE OR REPLACE PROCEDURE unload_data_to_s3(
 --     table_name IN VARCHAR,  -- Table name passed as argument
 --     s3_prefix IN VARCHAR    -- Prefix for the S3 file name
